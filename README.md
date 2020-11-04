@@ -8,7 +8,7 @@ LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect
 python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 ```
 
-### Timeline graphic 
+### COVID-19 timeline graphic 
 COVID-19 virus exposure, symptom onset and testing (1)
 
 
