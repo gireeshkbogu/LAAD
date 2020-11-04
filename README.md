@@ -29,9 +29,9 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 ### Timeline graphic 
 COVID-19 virus exposure, symptom onset and testing (1)
 
-<p align="center">
+
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
-</p>
+
 
 ### Data splitting: 
 We split the data using the no.of days during virus exposure and symptom onset as shown above
