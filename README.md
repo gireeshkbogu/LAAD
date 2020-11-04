@@ -11,7 +11,7 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 
 ### Results
 
-<img width="899" alt="results" src="https://user-images.githubusercontent.com/3885659/98135407-a9476480-1e74-11eb-922b-95382ed1e87d.png">
+<img width="1150" alt="results" src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
 
 
 ### Timeline graphic 
