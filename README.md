@@ -1,6 +1,16 @@
 # LAAD
 LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect abnormal resting heart rate (RHR) during the COVID-19 period. 
 
+### Usage
+
+```
+python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+```
+
+### Results
+
+![results](https://user-images.githubusercontent.com/3885659/98135013-350cc100-1e74-11eb-8b1f-df59f41f8fa7.png)
+
 
 ### Timeline graphic for COVID-19 virus exposure, symptom onset annd testing (1)
 
