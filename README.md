@@ -82,15 +82,15 @@ We split the data using the no.of days during virus exposure and symptom onset a
 
 <p align="center">
 <img width="893" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98157243-eec45b80-1e8d-11eb-93f5-303e313f97a5.png">
+<img width="902" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98171758-1a9f0b80-1ea5-11eb-900f-e06214be8762.png">
 </p>
-
 
 #### Multi-sensor (RHR, Steps, Sleep)
 
 <p align="center">
 <img width="907" alt="multi-sensor" src="https://user-images.githubusercontent.com/3885659/98157247-eff58880-1e8d-11eb-8176-62afe9ddc9a4.png">
+<img width="901" alt="mulit-sensor" src="https://user-images.githubusercontent.com/3885659/98171762-1bd03880-1ea5-11eb-9735-9c09b405e40f.png">
 </p>
-
 
 ### References:
 
