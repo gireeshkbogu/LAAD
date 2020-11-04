@@ -85,7 +85,7 @@ We split the data using the no.of days during virus exposure and symptom onset a
 </p>
 
 
-#### Multi-sensor LAAD (RHR, Steps, Sleep)
+#### Multi-sensor (RHR, Steps, Sleep)
 
 <p align="center">
 <img width="907" alt="multi-sensor" src="https://user-images.githubusercontent.com/3885659/98157247-eff58880-1e8d-11eb-8176-62afe9ddc9a4.png">
