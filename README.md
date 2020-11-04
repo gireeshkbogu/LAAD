@@ -64,6 +64,9 @@ We split the data using the no.of days during virus exposure and symptom onset a
     False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
 
 
+### LAAD architecutre
+
+
 ### References:
 
 https://github.com/shobrook/sequitur
