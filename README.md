@@ -64,12 +64,14 @@ We split the data using the no.of days during virus exposure and symptom onset a
     False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
 
 
-### LAAD architecutre
+### LAAD architecutre 
 
 
 ### References:
 
 https://github.com/shobrook/sequitur
+
+https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html
 
 https://github.com/curiousily/Getting-Things-Done-with-Pytorch
 
@@ -82,5 +84,8 @@ http://karpathy.github.io/2015/05/21/rnn-effectiveness/
 https://sebastianraschka.com/pdf/lecture-notes/stat479ss19/L14_intro-rnn-part2_slides.pdf
 
 https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
+
+Detecting Mobile Traffic Anomalies through Physical Control Channel Fingerprinting: a Deep Semi-supervised Approach, HOANG DUY TRINH1,IEEE
+
 
 (1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
