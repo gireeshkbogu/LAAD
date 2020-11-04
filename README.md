@@ -16,7 +16,7 @@ COVID-19 virus exposure, symptom onset and testing (1)
 
 
 ### Data splitting: 
-We split the data using the no.of days during general trennd of virus exposure and symptom onset as shown in Hodgson et.al., study (1).
+We split the data using the no.of days during general trend of the COVID-19 virus exposure and symptom onset as shown in Hodgson et.al., study (1).
 
     Data is split into train and test
      - Days prior COVID-19 symptoms = Train
