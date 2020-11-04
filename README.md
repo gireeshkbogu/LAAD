@@ -10,20 +10,28 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 
 
 ### Results
+<p align="center">
+<img width="1150" alt="results" src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
+</p>
 
-<img  align="center" width="1150" alt="results"src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
+<p align="center">
+<img width="175" alt="metrics" src="https://user-images.githubusercontent.com/3885659/98135949-45716b80-1e75-11eb-9b9c-7fbaeb02fedd.png"> 
+</p>
 
-<img  align="center" width="175" alt="metrics" src="https://user-images.githubusercontent.com/3885659/98135949-45716b80-1e75-11eb-9b9c-7fbaeb02fedd.png"> 
+<p align="center">
+<img width="323" alt="sn vs sp" src="https://user-images.githubusercontent.com/3885659/98135967-4904f280-1e75-11eb-8b39-4dcfe1de9956.png"> 
+</p>
 
-<img  align="center" width="323" alt="sn vs sp" src="https://user-images.githubusercontent.com/3885659/98135967-4904f280-1e75-11eb-8b39-4dcfe1de9956.png"> 
-
-<img  align="center" width="331" alt="roc" src="https://user-images.githubusercontent.com/3885659/98135989-4d311000-1e75-11eb-978e-555aeca7f749.png">
+<p align="center">
+<img width="331" alt="roc" src="https://user-images.githubusercontent.com/3885659/98135989-4d311000-1e75-11eb-978e-555aeca7f749.png">
+</p>
 
 ### Timeline graphic 
 COVID-19 virus exposure, symptom onset and testing (1)
 
+<p align="center">
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
-
+</p>
 
 ### Data splitting: 
 We split the data using the no.of days during virus exposure and symptom onset as shown above
