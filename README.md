@@ -58,7 +58,7 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 
 
 
-### Comparing single-sensor data versus multi-sensor
+### Comparing single-sensor data versus multi-sensor results
 
 #### Single-sensor (RHR)
 
