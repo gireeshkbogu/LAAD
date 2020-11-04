@@ -11,11 +11,13 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 
 ### Results
 
-<img width="1150" alt="results" src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
+<div style="text-align:center"> <img width="1150" alt="results" src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
 
-<img width="175" alt="metrics" src="https://user-images.githubusercontent.com/3885659/98135949-45716b80-1e75-11eb-9b9c-7fbaeb02fedd.png"> <img width="323" alt="sn vs sp" src="https://user-images.githubusercontent.com/3885659/98135967-4904f280-1e75-11eb-8b39-4dcfe1de9956.png"> 
+<div style="text-align:center"> <img width="175" alt="metrics" src="https://user-images.githubusercontent.com/3885659/98135949-45716b80-1e75-11eb-9b9c-7fbaeb02fedd.png"> 
 
-<img width="331" alt="roc" src="https://user-images.githubusercontent.com/3885659/98135989-4d311000-1e75-11eb-978e-555aeca7f749.png">
+<div style="text-align:center">. <img width="323" alt="sn vs sp" src="https://user-images.githubusercontent.com/3885659/98135967-4904f280-1e75-11eb-8b39-4dcfe1de9956.png"> 
+
+<div style="text-align:center"> <img width="331" alt="roc" src="https://user-images.githubusercontent.com/3885659/98135989-4d311000-1e75-11eb-978e-555aeca7f749.png">
 
 ### Timeline graphic 
 COVID-19 virus exposure, symptom onset and testing (1)
