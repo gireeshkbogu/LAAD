@@ -14,8 +14,8 @@ https://github.com/curiousily/Getting-Things-Done-with-Pytorch
 
 https://github.com/BLarzalere/LSTM-Autoencoder-for-Anomaly-Detection
 
-https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
-
 http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 
 https://sebastianraschka.com/pdf/lecture-notes/stat479ss19/L14_intro-rnn-part2_slides.pdf
+
+https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
