@@ -3,9 +3,13 @@ LSTM-based Autoencoder Anomaly Detection.
 
 LAAD is primarily developed to detect abnormal resting heart rate (RHR) during the COVID-19 period. 
 
-Data splitting: It is based on previous research (viral load and detection rate)(1)
+
+Timeline graphic for COVID-19 virus exposure, symptom onset, testing (1) 
+
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
 
+
+Data splitting: We split the data using the no.of days during virus exposure and symptom onset as shown above. 
 
     Data is split into train and test
      - Days prior COVID-19 symptoms = Train
@@ -50,3 +54,5 @@ http://karpathy.github.io/2015/05/21/rnn-effectiveness/
 https://sebastianraschka.com/pdf/lecture-notes/stat479ss19/L14_intro-rnn-part2_slides.pdf
 
 https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
+
+(1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
