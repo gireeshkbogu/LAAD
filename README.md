@@ -4,12 +4,13 @@ LSTM-based Autoencoder Anomaly Detection.
 LAAD is primarily developed to detect abnormal resting heart rate (RHR) during the COVID-19 period. 
 
 
-## Timeline graphic for COVID-19 virus exposure, symptom onset, testing (1)
+### Timeline graphic for COVID-19 virus exposure, symptom onset, testing (1)
 
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
 
 
-## Data splitting: We split the data using the no.of days during virus exposure and symptom onset as shown above
+### Data splitting: 
+We split the data using the no.of days during virus exposure and symptom onset as shown above
 
     Data is split into train and test
      - Days prior COVID-19 symptoms = Train
@@ -24,7 +25,7 @@ LAAD is primarily developed to detect abnormal resting heart rate (RHR) during t
             - 7-0-21 = test_anomaly (14 days, 7-0 = pre-symptomatic, 0-21 = symptomatic)
             - < 7 | > 21 = test_normal ( ~26 days, < 7 = downstream of pre-symptomatic, > 21 = upstream of symtpomatic)
 
-## Metrics:
+### Metrics:
 
     If anomaly sequence prediction falls in 7-0-21 = TP
     True positives (TP) are the number of anomalous days that are correctly identified as anomalous.
@@ -39,7 +40,7 @@ LAAD is primarily developed to detect abnormal resting heart rate (RHR) during t
     False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
 
 
-## References:
+### References:
 
 https://github.com/shobrook/sequitur
 
