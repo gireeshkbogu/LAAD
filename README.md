@@ -76,7 +76,7 @@ We split the data using the no.of days during virus exposure and symptom onset a
 
 
 
-### Comparing single-sensor data versus multi-sensnor
+### Comparing single-sensor data versus multi-sensor
 
 #### Single-sensor (RHR)
 
