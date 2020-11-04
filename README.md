@@ -5,18 +5,18 @@ LAAD is primarily developed to detect abnormal resting heart rate (RHR) during t
 
 Data splitting:
 
-Data is split into train and test
- - Days prior COVID-19 symptoms = Train
- - Days proximal COVID-19 symptoms = Test
-     - Days proximal to COVID-19 symptoms excluding pre-symptomatic and recovery days = Test_normal
-     - Days proximal to COVID-19 symptoms with only pre-symptomatic and symptomatic days = Test_anomaly
+    Data is split into train and test
+     - Days prior COVID-19 symptoms = Train
+     - Days proximal COVID-19 symptoms = Test
+         - Days proximal to COVID-19 symptoms excluding pre-symptomatic and recovery days = Test_normal
+         - Days proximal to COVID-19 symptoms with only pre-symptomatic and symptomatic days = Test_anomaly
 
-If on average the dataset is 2 months long:
-   - the train data will first 20 days and the later would be tested assuming the symptom date is in the later month. 
+    If on average the dataset is 2 months long:
+       - the train data will first 20 days and the later would be tested assuming the symptom date is in the later month. 
 
-   - Test data is further split into anomaly and normal
-        - 7-0-21 = test_anomaly (14 days, 7-0 = pre-symptomatic, 0-21 = symptomatic)
-        - < 7 | > 21 = test_normal ( ~26 days, < 7 = downstream of pre-symptomatic, > 21 = upstream of symtpomatic)
+       - Test data is further split into anomaly and normal
+            - 7-0-21 = test_anomaly (14 days, 7-0 = pre-symptomatic, 0-21 = symptomatic)
+            - < 7 | > 21 = test_normal ( ~26 days, < 7 = downstream of pre-symptomatic, > 21 = upstream of symtpomatic)
 
 Metrics:
 
