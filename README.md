@@ -64,7 +64,15 @@ We split the data using the no.of days during virus exposure and symptom onset a
     False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
 
 
-### LAAD architecutre 
+### LAAD architecutre (2)
+
+<p align="center">
+<img width="840" alt="pipeline" src="https://user-images.githubusercontent.com/3885659/98139807-781d6300-1e79-11eb-8eff-4313b0cef37b.png">
+</p>
+
+<p align="center">
+<img width="464" alt="lstm" src="https://user-images.githubusercontent.com/3885659/98139812-794e9000-1e79-11eb-8790-a5e3657afc34.png">
+</p>
 
 
 ### References:
@@ -85,7 +93,8 @@ https://sebastianraschka.com/pdf/lecture-notes/stat479ss19/L14_intro-rnn-part2_s
 
 https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
 
-Detecting Mobile Traffic Anomalies through Physical Control Channel Fingerprinting: a Deep Semi-supervised Approach, HOANG DUY TRINH1,IEEE
 
 
 (1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
+(2) Detecting Mobile Traffic Anomalies through Physical Control Channel Fingerprinting: a Deep Semi-supervised Approach, HOANG DUY TRINH1,IEEE
+
