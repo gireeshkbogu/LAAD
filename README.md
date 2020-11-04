@@ -8,24 +8,6 @@ LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect
 python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 ```
 
-
-### Results
-<p align="center">
-<img width="1150" alt="results" src="https://user-images.githubusercontent.com/3885659/98135666-f3c8e100-1e74-11eb-9fb9-39321c375442.png">
-</p>
-
-<p align="center">
-<img width="175" alt="metrics" src="https://user-images.githubusercontent.com/3885659/98135949-45716b80-1e75-11eb-9b9c-7fbaeb02fedd.png"> 
-</p>
-
-<p align="center">
-<img width="323" alt="sn vs sp" src="https://user-images.githubusercontent.com/3885659/98135967-4904f280-1e75-11eb-8b39-4dcfe1de9956.png"> 
-</p>
-
-<p align="center">
-<img width="331" alt="roc" src="https://user-images.githubusercontent.com/3885659/98135989-4d311000-1e75-11eb-978e-555aeca7f749.png">
-</p>
-
 ### Timeline graphic 
 COVID-19 virus exposure, symptom onset and testing (1)
 
@@ -83,13 +65,18 @@ We split the data using the no.of days during virus exposure and symptom onset a
 <p align="center">
 <img width="893" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98157243-eec45b80-1e8d-11eb-93f5-303e313f97a5.png">
 <img width="902" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98171758-1a9f0b80-1ea5-11eb-900f-e06214be8762.png">
+<img width="685" alt="metrics_single_sensor" src="https://user-images.githubusercontent.com/3885659/98172764-c4cb6300-1ea6-11eb-9472-e699c9da6fd3.png">
+<img width="329" alt="roc_single_sennsor" src="https://user-images.githubusercontent.com/3885659/98172776-c8f78080-1ea6-11eb-8cbd-31666502ba81.png">
 </p>
+
 
 #### Multi-sensor (RHR, Steps, Sleep)
 
 <p align="center">
 <img width="907" alt="multi-sensor" src="https://user-images.githubusercontent.com/3885659/98157247-eff58880-1e8d-11eb-8176-62afe9ddc9a4.png">
 <img width="901" alt="mulit-sensor" src="https://user-images.githubusercontent.com/3885659/98171762-1bd03880-1ea5-11eb-9735-9c09b405e40f.png">
+<img width="682" alt="metrics_multi-sensor" src="https://user-images.githubusercontent.com/3885659/98172767-c5fc9000-1ea6-11eb-9581-b4264a415a9b.png">
+<img width="327" alt="roc_muliti-sensor" src="https://user-images.githubusercontent.com/3885659/98172783-cc8b0780-1ea6-11eb-950a-b991a12553de.png">
 </p>
 
 ### References:
