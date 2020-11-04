@@ -12,7 +12,8 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 ![results](https://user-images.githubusercontent.com/3885659/98135013-350cc100-1e74-11eb-8b1f-df59f41f8fa7.png)
 
 
-### Timeline graphic for COVID-19 virus exposure, symptom onset annd testing (1)
+### Timeline graphic 
+COVID-19 virus exposure, symptom onset and testing (1)
 
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
 
