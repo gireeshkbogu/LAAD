@@ -7,12 +7,7 @@
 # Date: Nov 2 2020                                   #
 ######################################################
 
-
-#python laad.py --heart_rate COVID-19-Wearables/AKXN5ZZ_hr.csv \
-#--steps COVID-19-Wearables/AKXN5ZZ_steps.csv \
-#--myphd_id  AKXN5ZZ \
-#--symptom_date 2028-01-16
-
+#python laad.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -606,7 +601,7 @@ class RHRAD:
         metrics_df.rename({0: myphd_id}, axis='index')
         metrics_df.index = [myphd_id]
         print(metrics_df)
-        metrics_df.to_csv(myphd_id + 'metrics.csv', header=True)
+        metrics_df.to_csv(myphd_id + '_metrics.csv', header=True)
         return metrics_df
 
 
