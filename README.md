@@ -9,7 +9,7 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 ```
 
 ### COVID-19 timeline graphic 
-COVID-19 virus exposure, symptom onset and testing (1). There are exceptions like 70 days of verial shredding in immunnocompromised patient (3).
+COVID-19 virus exposure, symptom onset and testing (1). There are exceptions like 70 days of virial shredding in immunnocompromised patient (3).
 
 
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
