@@ -9,7 +9,9 @@ python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv 
 ```
 
 ### COVID-19 timeline graphic 
-COVID-19 virus exposure, symptom onset and testing (1). There are exceptions like 70 days of virial shredding in asymptomatic and immunnocompromised 71 old women (3).
+COVID-19 virus exposure, symptom onset and testing (1). Viral shedding begins 5-6 days before symptom onset  in COVID-19 cases and continues for 21 days;  and peaks at 2 days before and 1 day after symptom onset (4).
+
+There are exceptions like 70 days of virial shredding in asymptomatic and immunnocompromised 71 old women (3).
 
 
 ![timeline](https://user-images.githubusercontent.com/3885659/98132147-e9a4e380-1e70-11eb-9185-16d4406422a3.jpeg)
@@ -104,3 +106,5 @@ https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-senso
 (2) Detecting Mobile Traffic Anomalies through Physical Control Channel Fingerprinting: a Deep Semi-supervised Approach, HOANG DUY TRINH1,IEEE
 
 (3) Case Study: Prolonged infectious SARS-CoV-2 shedding from an asymptomatic immunocompromised cancer patient, Avanzato et.al., Cell
+
+(4) Temporal dynamics in viral shedding and transmissibility of COVID-19, Xi He et.al., Nat Medicine
