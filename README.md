@@ -5,7 +5,8 @@ LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect
 ### Usage
 
 ```
-python laad.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+python laad_RHR.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+python laad_multi_sensor.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --sleep data/ASFODQR_sleep.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 ```
 
 ### COVID-19 timeline graphic 
@@ -58,9 +59,9 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 
 
 
-### Comparing single-sensor data versus multi-sensor results
+### Comparing RHR data versus multi-sensor results
 
-#### Single-sensor (RHR)
+#### RHR
 
 <p align="middle">
 <img width="377" alt="s_training" src="https://user-images.githubusercontent.com/3885659/98371029-5b576b80-1ff0-11eb-89ab-c002d3ea78ba.png">
