@@ -73,10 +73,10 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 #### Multi-sensor (RHR, Steps, Sleep)
 
 <p align="middle">
-<img width="891" alt="ms_data" src="https://user-images.githubusercontent.com/3885659/98367610-c43be500-1fea-11eb-9be8-ade413f2d71e.png">
-<br/><br/>
 <img width="374" alt="ms_training" src="https://user-images.githubusercontent.com/3885659/98368897-f0586580-1fec-11eb-8990-44c87eb74e1c.png">
 <img width="365" alt="ms_pred_loss" src="https://user-images.githubusercontent.com/3885659/98369816-67422e00-1fee-11eb-9570-9df4d650b4b6.png">
+<br/><br/>
+<img width="891" alt="ms_data" src="https://user-images.githubusercontent.com/3885659/98367610-c43be500-1fea-11eb-9be8-ade413f2d71e.png">
 <br/><br/>
 <img width="909" alt="ms_anomalies" src="https://user-images.githubusercontent.com/3885659/98367705-f3525680-1fea-11eb-9af3-3ea5ce6e3381.png">
 <br/><br/>
