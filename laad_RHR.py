@@ -7,7 +7,7 @@
 # Date: Nov 2 2020                                   #
 ######################################################
 
-#python laad.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+#python laad_RHR.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 import warnings
 warnings.filterwarnings('ignore')
