@@ -74,7 +74,6 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 <br/><br/>
 <img width="330" alt="s_roc_plot" src="https://user-images.githubusercontent.com/3885659/98371076-71652c00-1ff0-11eb-988e-7d83f1d27dcc.png">
 </p>
-<br/><br/>
 
 #### Multi-sensor (RHR, Steps, Sleep)
 
@@ -90,7 +89,7 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 <br/><br/>  
 <img width="327" alt="ms_roc" src="https://user-images.githubusercontent.com/3885659/98367765-0a914400-1feb-11eb-8927-e6878191e6be.png">
 </p>
-<br/><br/>
+
 
 ### References:
 
