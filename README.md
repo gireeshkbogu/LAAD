@@ -62,13 +62,19 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 
 #### Single-sensor (RHR)
 
-<p align="center">
-<img width="893" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98157243-eec45b80-1e8d-11eb-93f5-303e313f97a5.png">
-<img width="902" alt="single-sensor" src="https://user-images.githubusercontent.com/3885659/98171758-1a9f0b80-1ea5-11eb-900f-e06214be8762.png">
-<img width="685" alt="metrics_single_sensor" src="https://user-images.githubusercontent.com/3885659/98172764-c4cb6300-1ea6-11eb-9472-e699c9da6fd3.png">
-<img width="329" alt="roc_single_sennsor" src="https://user-images.githubusercontent.com/3885659/98172776-c8f78080-1ea6-11eb-8cbd-31666502ba81.png">
+<p align="middle">
+<img width="377" alt="s_training" src="https://user-images.githubusercontent.com/3885659/98371029-5b576b80-1ff0-11eb-89ab-c002d3ea78ba.png">
+<img width="373" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/98371036-5db9c580-1ff0-11eb-9988-d3af77d5ef4d.png">
+<br/><br/>
+<img width="904" alt="s_results" src="https://user-images.githubusercontent.com/3885659/98371058-67432d80-1ff0-11eb-8802-e28d49a2391e.png">
+<br/><br/>
+<img width="910" alt="s_aomalies" src="https://user-images.githubusercontent.com/3885659/98371063-6ad6b480-1ff0-11eb-9b01-ba0aa6510724.png">
+<br/><br/>
+<img width="678" alt="s_metrics" src="https://user-images.githubusercontent.com/3885659/98371069-6e6a3b80-1ff0-11eb-8f22-4a52834e8844.png">
+<br/><br/>
+<img width="330" alt="s_roc_plot" src="https://user-images.githubusercontent.com/3885659/98371076-71652c00-1ff0-11eb-988e-7d83f1d27dcc.png">
 </p>
-
+<br/><br/>
 
 #### Multi-sensor (RHR, Steps, Sleep)
 
