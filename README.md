@@ -81,9 +81,10 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 <img width="909" alt="ms_anomalies" src="https://user-images.githubusercontent.com/3885659/98367705-f3525680-1fea-11eb-9af3-3ea5ce6e3381.png">
 <br/><br/>
 <img width="680" alt="ms_metrics" src="https://user-images.githubusercontent.com/3885659/98367735-fe0ceb80-1fea-11eb-9dbb-851dcbd952e1.png">
+    
 <img width="327" alt="ms_roc" src="https://user-images.githubusercontent.com/3885659/98367765-0a914400-1feb-11eb-8927-e6878191e6be.png">
 </p>
-
+<br/><br/>
 
 ### References:
 
