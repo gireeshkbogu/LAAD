@@ -72,12 +72,18 @@ We split the data using the no.of days during general trend of the COVID-19 viru
 
 #### Multi-sensor (RHR, Steps, Sleep)
 
-<p align="center">
-<img width="907" alt="multi-sensor" src="https://user-images.githubusercontent.com/3885659/98157247-eff58880-1e8d-11eb-8176-62afe9ddc9a4.png">
-<img width="901" alt="mulit-sensor" src="https://user-images.githubusercontent.com/3885659/98171762-1bd03880-1ea5-11eb-9735-9c09b405e40f.png">
-<img width="682" alt="metrics_multi-sensor" src="https://user-images.githubusercontent.com/3885659/98172767-c5fc9000-1ea6-11eb-9581-b4264a415a9b.png">
-<img width="327" alt="roc_muliti-sensor" src="https://user-images.githubusercontent.com/3885659/98172783-cc8b0780-1ea6-11eb-950a-b991a12553de.png">
+<p align="middle">
+<img width="891" alt="ms_data" src="https://user-images.githubusercontent.com/3885659/98367610-c43be500-1fea-11eb-9be8-ade413f2d71e.png">
+<br/><br/>
+<img width="374" alt="ms_training" src="https://user-images.githubusercontent.com/3885659/98368897-f0586580-1fec-11eb-8990-44c87eb74e1c.png">
+<img width="365" alt="ms_pred_loss" src="https://user-images.githubusercontent.com/3885659/98369816-67422e00-1fee-11eb-9570-9df4d650b4b6.png">
+<br/><br/>
+<img width="909" alt="ms_anomalies" src="https://user-images.githubusercontent.com/3885659/98367705-f3525680-1fea-11eb-9af3-3ea5ce6e3381.png">
+<br/><br/>
+<img width="680" alt="ms_metrics" src="https://user-images.githubusercontent.com/3885659/98367735-fe0ceb80-1fea-11eb-9dbb-851dcbd952e1.png">
+<img width="327" alt="ms_roc" src="https://user-images.githubusercontent.com/3885659/98367765-0a914400-1feb-11eb-8927-e6878191e6be.png">
 </p>
+
 
 ### References:
 
