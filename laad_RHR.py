@@ -4,10 +4,12 @@
 # Author: Gireesh K. Bogu                            #
 # Email: gbogu17@stanford.edu                        #
 # Location: Dept.of Genetics, Stanford University    #
-# Date: Nov 2 2020                                   #
+# Date: Nov 8 2020                                   #
 ######################################################
 
-#python laad_RHR.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+
+#python laad.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -74,84 +76,72 @@ torch.manual_seed(RANDOM_SEED)
 
 class Encoder(nn.Module):
 
-  def __init__(self, seq_len, n_features, embedding_dim=64):
-    super(Encoder, self).__init__()
+    def __init__(self, seq_len, n_features, embedding_dim=64):
+        super(Encoder, self).__init__()
+        self.seq_len, self.n_features = seq_len, n_features
+        self.embedding_dim, self.hidden_dim = embedding_dim, 2 * embedding_dim
 
-    self.seq_len, self.n_features = seq_len, n_features
-    self.embedding_dim, self.hidden_dim = embedding_dim, 2 * embedding_dim
+        self.rnn1 = nn.LSTM(
+            input_size=n_features,
+            hidden_size=self.hidden_dim,
+            num_layers=1,
+            batch_first=True)
 
-    self.rnn1 = nn.LSTM(
-      input_size=n_features,
-      hidden_size=self.hidden_dim,
-      num_layers=1,
-      batch_first=True
-    )
-    
-    self.rnn2 = nn.LSTM(
-      input_size=self.hidden_dim,
-      hidden_size=embedding_dim,
-      num_layers=1,
-      batch_first=True
-    )
+        self.rnn2 = nn.LSTM(
+            input_size=self.hidden_dim,
+            hidden_size=embedding_dim,
+            num_layers=1,
+            batch_first=True)
 
-  def forward(self, x):
-    x = x.reshape((1, self.seq_len, self.n_features))
-
-    x, (_, _) = self.rnn1(x)
-    x, (hidden_n, _) = self.rnn2(x)
-
-    return hidden_n.reshape((self.n_features, self.embedding_dim))
+    def forward(self, x):
+        x = x.reshape((1, self.seq_len, self.n_features))
+        x, (_, _) = self.rnn1(x)
+        x, (hidden_n, _) = self.rnn2(x)
+        return hidden_n.reshape((self.n_features, self.embedding_dim))
 
 
 
 class Decoder(nn.Module):
 
-  def __init__(self, seq_len, input_dim=64, n_features=1):
-    super(Decoder, self).__init__()
+    def __init__(self, seq_len, input_dim=64, n_features=1):
+        super(Decoder, self).__init__()
+        self.seq_len, self.input_dim = seq_len, input_dim
+        self.hidden_dim, self.n_features = 2 * input_dim, n_features
 
-    self.seq_len, self.input_dim = seq_len, input_dim
-    self.hidden_dim, self.n_features = 2 * input_dim, n_features
+        self.rnn1 = nn.LSTM(
+            input_size=input_dim,
+            hidden_size=input_dim,
+            num_layers=1,
+            batch_first=True)
 
-    self.rnn1 = nn.LSTM(
-      input_size=input_dim,
-      hidden_size=input_dim,
-      num_layers=1,
-      batch_first=True
-    )
+        self.rnn2 = nn.LSTM(
+            input_size=input_dim,
+            hidden_size=self.hidden_dim,
+            num_layers=1,
+            batch_first=True)
 
-    self.rnn2 = nn.LSTM(
-      input_size=input_dim,
-      hidden_size=self.hidden_dim,
-      num_layers=1,
-      batch_first=True
-    )
+        self.output_layer = nn.Linear(self.hidden_dim, n_features)
 
-    self.output_layer = nn.Linear(self.hidden_dim, n_features)
-
-  def forward(self, x):
-    x = x.repeat(self.seq_len, self.n_features)
-    x = x.reshape((self.n_features, self.seq_len, self.input_dim))
-
-    x, (hidden_n, cell_n) = self.rnn1(x)
-    x, (hidden_n, cell_n) = self.rnn2(x)
-    x = x.reshape((self.seq_len, self.hidden_dim))
-
-    return self.output_layer(x)
+    def forward(self, x):
+        x = x.repeat(self.seq_len, self.n_features)
+        x = x.reshape((self.n_features, self.seq_len, self.input_dim))
+        x, (hidden_n, cell_n) = self.rnn1(x)
+        x, (hidden_n, cell_n) = self.rnn2(x)
+        x = x.reshape((self.seq_len, self.hidden_dim))
+        return self.output_layer(x)
 
 
 class RecurrentAutoencoder(nn.Module):
 
-  def __init__(self, seq_len, n_features, embedding_dim=64):
-    super(RecurrentAutoencoder, self).__init__()
+    def __init__(self, seq_len, n_features, embedding_dim=64):
+        super(RecurrentAutoencoder, self).__init__()
+        self.encoder = Encoder(seq_len, n_features, embedding_dim).to(device)
+        self.decoder = Decoder(seq_len, embedding_dim, n_features).to(device)
 
-    self.encoder = Encoder(seq_len, n_features, embedding_dim).to(device)
-    self.decoder = Decoder(seq_len, embedding_dim, n_features).to(device)
-
-  def forward(self, x):
-    x = self.encoder(x)
-    x = self.decoder(x)
-
-    return x
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
 
 
 
@@ -206,7 +196,7 @@ class RHRAD:
         df1_resmp = df1_rom.resample('1H').mean()
         df2 = df1_resmp.drop(['steps'], axis=1)
         df2 = df2.drop(['steps_window_12'], axis=1)
-        df2 = df2.resample('24H').mean()
+        #df2 = df2.resample('24H').mean()
         df2 = df2.dropna()
         df2 = df2.rename(columns={"heartrate": "RHR"})
         return df2
@@ -215,7 +205,19 @@ class RHRAD:
    # data splitting ------------------------------------------------------
 
     def data_splitting(self, processed_data):
-        train = processed_data[:20]
+        
+        #train = processed_data[:20]
+        processed_data = processed_data.reset_index()
+        processed_data['date'] = [d.date() for d in processed_data['index']]
+        processed_data['time'] = [d.time() for d in processed_data['index']]
+        processed_data = processed_data.set_index('date')
+        processed_data.index.name = None
+        processed_data.index = pd.to_datetime(processed_data.index)
+        start = processed_data.index[0] + timedelta(days=20)
+        train = processed_data[(processed_data.index.get_level_values(0) < start)]
+        train = train.set_index('index')
+        train = train.drop(['time'], axis=1)
+
         df4 = train.sample(frac=0.1, replace=False, random_state=1)
         df5 = pd.merge(train, df4, how='outer', left_index=True, right_index=True, indicator=True)
         df5_train = df5.query('_merge != "both"')
@@ -243,7 +245,19 @@ class RHRAD:
         scaler = StandardScaler().fit(train_data)
         train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
         valid_data[['RHR']] = scaler.transform(valid_data[['RHR']])
-        test = processed_data[20:]
+        
+        #test = processed_data[20:]
+        processed_data = processed_data.reset_index()
+        processed_data['date'] = [d.date() for d in processed_data['index']]
+        processed_data['time'] = [d.time() for d in processed_data['index']]
+        processed_data = processed_data.set_index('date')
+        processed_data.index.name = None
+        processed_data.index = pd.to_datetime(processed_data.index)
+        start = processed_data.index[0] + timedelta(days=20)
+        test = processed_data[(processed_data.index.get_level_values(0) >= start)]
+        test = test.set_index('index')
+        test = test.drop(['time'], axis=1)
+
         test_data = test
         test_data[['RHR']] = scaler.transform(test[['RHR']])
         symptom_date1 = pd.to_datetime(symptom_date)
@@ -363,7 +377,9 @@ class RHRAD:
         mean = float(mean[0]) 
         std = stats.filter(like='std', axis=0)
         std = float(std[0]) 
-        THRESHOLD = mean + std + 0.5
+        max = stats.filter(like='max', axis=0)
+        max = float(max[0])
+        THRESHOLD = max
         return THRESHOLD
 
 
@@ -423,7 +439,7 @@ class RHRAD:
 
     # visualization ------------------------------------------------------
 
-    def visualize_complete_dataset(self, all_anomalies):
+    def visualize_complete_dataset(self, all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21):
         # plot original data
         all_score_df = all_anomalies.reset_index()
         all_score_df = all_score_df.set_index('datetime')
@@ -466,18 +482,21 @@ class RHRAD:
 
         # plot anomaly scores
         all_score_df1 = all_anomalies.reset_index()
-        ax3 = all_score_df1.plot.scatter(x='datetime',y='loss', figsize=(24,6),  rot=90, marker='o', lw=5,
-            c=['red' if i== True else 'blue'  for i in all_score_df1['anomaly']])
+        ax3 = all_score_df1.plot.scatter(x='datetime',y='loss', figsize=(24,6),  rot=90, marker='o', lw=2,
+            c=['red' if i== True else 'mediumblue'  for i in all_score_df1['anomaly']])
         ax3.set_xlim(all_score_df1['datetime'].iloc[0], all_score_df1['datetime'].iloc[-1]) 
         ax3.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
         ax3.xaxis.set_major_locator(mdates.DayLocator(interval=2))
         ax3.xaxis.set_major_formatter(mdates.DateFormatter('%y-%b-%d'))
         ax3.set_ylabel('Anomaly Score\n', fontsize = 20) # Y label
         ax3.set_xlabel('', fontsize = 0) # X label
+        ax3.axvline(pd.to_datetime(symptom_date_before_7), color='orange', zorder=1, linestyle='--',  lw=6, alpha=0.5) # Symptom date 
+        ax3.axvline(pd.to_datetime(symptom_date1), color='red', zorder=1, linestyle='--',  lw=6, alpha=0.5) # Symptom date 
+        ax3.axvline(pd.to_datetime(symptom_date_after_21), color='purple', zorder=1, linestyle='--', lw=6, alpha=0.5) # Symptom date 
         ax3.tick_params(axis='both', which='major', labelsize=22)
         ax3.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         ax3.set_title(myphd_id,fontweight="bold", size=30) # Title
-        plt.axhline(y=THRESHOLD, color='r', linestyle='--', lw=4)
+        plt.axhline(y=THRESHOLD, color='grey', linestyle='--', lw=3, alpha=0.3)
         plt.tick_params(axis='both',which='both',bottom=True, top=False, labelbottom=True) 
         plt.tight_layout()
         plt.savefig(myphd_id + '_all_anomaly_scores.pdf', bbox_inches='tight')  
@@ -493,6 +512,8 @@ class RHRAD:
         #7-21 window (True preds are TPs and False are TNs)
 
         all_score_df1 = all_anomalies[['anomaly', 'predictions']]
+        all_score_df1 = all_score_df1.resample('1H').mean()
+        all_score_df1 =  all_score_df1.fillna(0)
         test_anomaly_df1 = all_score_df1[symptom_date_before_7:symptom_date_after_21]
         test_anomaly_df1 = test_anomaly_df1.groupby(['anomaly']).count()
         test_anomaly_df1 = test_anomaly_df1.reset_index()
@@ -554,6 +575,8 @@ class RHRAD:
                 return 'OTHER'
 
         all_score_df1 = all_anomalies[['anomaly', 'predictions']]
+        all_score_df1 = all_score_df1.resample('1H').mean()
+        all_score_df1 =  all_score_df1.fillna(0)
         test_anomaly_df1 = all_score_df1[symptom_date_before_7:symptom_date_after_21]
         test_normal_df1 = pd.merge(test_normal_data, all_anomalies,  how='outer',  left_index=True, right_index=True)
         test_normal_df1 = test_normal_df1.loc[test_normal_df1['RHR_x'].notnull()]
@@ -594,10 +617,10 @@ class RHRAD:
 
     # save metrics  ------------------------------------------------------
 
-    def save_metrics(self, TP, FP, TN, FN, sensitivity, specificity, precision, recall, AUC):
-        metrics_list = [TP, FP, TN, FN, sensitivity, specificity, precision, recall, AUC]
+    def save_metrics(self, TP, FP, TN, FN, AUC):
+        metrics_list = [TP, FP, TN, FN,  AUC]
         metrics_df = pd.DataFrame([metrics_list])
-        metrics_df.columns =['TP', 'FP', 'TN', 'FN', 'Sensitivity','Specificity','Precision', 'Recall', 'AUC']
+        metrics_df.columns =['TP', 'FP', 'TN', 'FN',  'AUC']
         metrics_df.rename({0: myphd_id}, axis='index')
         metrics_df.index = [myphd_id]
         print(metrics_df)
@@ -661,13 +684,15 @@ predictions, pred_losses = rhrad.predict(model, all_merged_dataset)
 all_anomalies = rhrad.evaluate_complete_dataset(all_merged, THRESHOLD)
 
 # metrics
-rhrad.visualize_complete_dataset(all_anomalies)
+rhrad.visualize_complete_dataset(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21)
 TP, FP, TN, FN = rhrad.metrics_1(all_anomalies, test_normal_data, symptom_date_before_7, symptom_date_after_21)
-sensitivity, specificity, precision, recall = rhrad.metrics_2(TP, FP, TN, FN)
+#sensitivity, specificity, precision, recall = rhrad.metrics_2(TP, FP, TN, FN)
 
 # ROC plot
 roc_input = rhrad.roc_input(all_anomalies, test_normal_data, symptom_date_before_7, symptom_date_after_21)
 auc = rhrad.roc_plot(roc_input)
-rhrad.save_metrics(TP, FP, TN, FN, sensitivity, specificity, precision, recall, auc)
+#rhrad.save_metrics(TP, FP, TN, FN, sensitivity, specificity, precision, recall, auc)
+rhrad.save_metrics(TP, FP, TN, FN,  auc)
+
 
 ############ ********************* ---------------- END -----------------------**************** ###############
