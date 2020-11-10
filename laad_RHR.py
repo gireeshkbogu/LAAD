@@ -694,5 +694,4 @@ auc = rhrad.roc_plot(roc_input)
 #rhrad.save_metrics(TP, FP, TN, FN, sensitivity, specificity, precision, recall, auc)
 rhrad.save_metrics(TP, FP, TN, FN,  auc)
 
-
-############ ********************* ---------------- END -----------------------**************** ###############
+############### END  ###############
