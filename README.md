@@ -110,6 +110,8 @@ https://sebastianraschka.com/pdf/lecture-notes/stat479ss19/L14_intro-rnn-part2_s
 
 https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection)
 
+https://github.com/uchidalab/time_series_augmentation
+
 
 
 (1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
