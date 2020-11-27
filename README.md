@@ -112,6 +112,8 @@ https://arxiv.org/pdf/1607.00148.pdf (LSTM-based Encoder-Decoder for Multi-senso
 
 https://github.com/uchidalab/time_series_augmentation
 
+https://github.com/terryum/Data-Augmentation-For-Wearable-Sensor-Data
+
 
 
 (1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
