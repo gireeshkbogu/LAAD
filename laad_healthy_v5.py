@@ -4,10 +4,10 @@
 # Author: Gireesh K. Bogu                            #
 # Email: gbogu17@stanford.edu                        #
 # Location: Dept.of Genetics, Stanford University    #
-# Date: Nov 20 2020                                   #
+# Date: Nov 26 2020                                  #
 ######################################################
 
-#python laad.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+#python laad_healthy_v5.py --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 
 import warnings
@@ -47,14 +47,13 @@ palette = ["#01BEFE", "#FFDD00", "#FF7D00", "#FF006D", "#ADFF02", "#8F00FF"]
 sns.set_palette(sns.color_palette(palette))
 rcParams['figure.figsize'] = 12, 8
 
-
 # as command prompts -----------------------
 
 parser = argparse.ArgumentParser(description='Find anomalies in wearables time-series data')
 parser.add_argument('--heart_rate', metavar='', help ='raw heart rate count with a header = heartrate')
 parser.add_argument('--steps',metavar='', help ='raw steps count with a header = steps')
 parser.add_argument('--myphd_id',metavar='', default = 'myphd_id', help ='user myphd_id')
-#parser.add_argument('--symptom_date', metavar='', default = 'NaN', help = 'symptom date with y-m-d format')
+parser.add_argument('--symptom_date', metavar='', default = 'NaN', help = 'symptom date with y-m-d format')
 parser.add_argument('--random_seed', metavar='', type=int, default=42, help='random seed')
 args = parser.parse_args()
 
@@ -63,14 +62,13 @@ args = parser.parse_args()
 fitbit_oldProtocol_hr = args.heart_rate
 fitbit_oldProtocol_steps = args.steps
 myphd_id = args.myphd_id
-#symptom_date = args.symptom_date
+symptom_date = args.symptom_date
 RANDOM_SEED = args.random_seed
 
 np.random.seed(RANDOM_SEED)
 tf.random.set_seed(RANDOM_SEED)
 random.seed(RANDOM_SEED)
 
- 
 # Hyper-parameters --------------------
 
 TIME_STEPS = 8
@@ -79,8 +77,8 @@ BATCH_SIZE = 64
 VALIDATION_SPLIT = 0.05
 LEARNING_RATE = 0.0001
 
+BASE_LINE_DAYS = 10
 
-########################################################################
 
 class LAAD:
 
@@ -143,11 +141,11 @@ class LAAD:
 
     def data_splitting(self, processed_data):
         """
-        It splits data into training data by taking first 20 days and the rest as testing data.
+        It splits data into training data by taking first 10 days and the rest as testing data.
         It also creates windows of pre- and post-symptomatic COVID-periods.
         """
 
-        train = processed_data[:10]
+        train = processed_data[:BASE_LINE_DAYS]
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
@@ -156,12 +154,16 @@ class LAAD:
         processed_data.index = pd.to_datetime(processed_data.index)
 
         # split data into train
-        start = processed_data.index[0] + timedelta(days=10)
+        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
         train = processed_data[(processed_data.index.get_level_values(0) < start)]
         train = train.set_index('index')
         train = train.drop(['time'], axis=1)
 
-        return train
+        symptom_date1 = pd.to_datetime(symptom_date)
+        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
+        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
+
+        return train, symptom_date1, symptom_date_before_7, symptom_date_after_21
 
     # standardization ------------------------------------------------------
 
@@ -174,7 +176,6 @@ class LAAD:
         For normalization, these statistics are the mean and variance for each feature.
         The same logic should be used for the validation set if theree is any. This makes the model more stable for a test data.
 
-        
         It also  splits the test data into test-normal and tes-anomaly for metrics calcualtions later
         It calculates delta RHR for test-anomlay data using baseline/training data
         """
@@ -185,25 +186,17 @@ class LAAD:
 
         scaler = StandardScaler().fit(train_data)
         train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
-        
+
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
         processed_data = processed_data.set_index('date')
         processed_data.index.name = None
         processed_data.index = pd.to_datetime(processed_data.index)
-        start = processed_data.index[0] + timedelta(days=10)
+        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
         test = processed_data[(processed_data.index.get_level_values(0) >= start)]
         test = test.set_index('index')
         test = test.drop(['time'], axis=1)
-
-        # create a random symptom date using test data
-        sdate = test.sample(n=1, random_state=RANDOM_SEED)
-        symptom_date = sdate.index.format()
-        symptom_date = ''.join(symptom_date)
-        symptom_date1 = pd.to_datetime(symptom_date)
-        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
-        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
 
         test_data = test
 
@@ -235,11 +228,12 @@ class LAAD:
             print("id","train ","test ", "test_normal ", "test_anomaly ","\n",
                 myphd_id, train_data.shape, test_data.shape, test_normal.shape, test_anomaly.shape, file=f)
 
-        return train_data, test, test_data, test_normal, test_anomaly, all_merged, test_anomaly_delta_RHR, symptom_date1, symptom_date_before_7, symptom_date_after_21
+        return train_data, test, test_data, test_normal, test_anomaly, all_merged, test_anomaly_delta_RHR
+
 
     # creating LSTM input ------------------------------------------------------
     """
-    Apply lag method to create subsequences by keepng the temporal order of the data constant 
+    Apply lag method to create subsequences by keeping the temporal order of the data constant 
     """
 
     def create_dataset(self, dataset, time_steps=1):
@@ -361,7 +355,7 @@ class LAAD:
     def LA(self, train, valid):
         model = keras.Sequential()
         # shape [batch, time, features] => [batch, time, lstm_units]
-        model.add(keras.layers.LSTM(units=128, 
+        model.add(keras.layers.LSTM(units=64, 
             input_shape=(train_dataset.shape[1], train_dataset.shape[2]), 
             return_sequences=True))
         #model.add(keras.layers.Dropout(rate=0.2))
@@ -384,6 +378,7 @@ class LAAD:
             callbacks=[early_stopping_callback, checkpoint_callback])
         return history, model
 
+
    # visualization ------------------------------------------------------
 
     def visualize_loss(self, history):
@@ -404,10 +399,9 @@ class LAAD:
     # save model  ------------------------------------------------------
 
     def save_model(self, model):
-        MODEL_PATH = myphd_id+'.pth'
+        MODEL_PATH = myphd_id+'.pth' 
         torch.save(model, MODEL_PATH)
         return MODEL_PATH
-
 
 
     # define automatic threshold  ------------------------------------------------------
@@ -435,15 +429,12 @@ class LAAD:
         # We can calculate the mean and standard deviation of training data loss 
         # then calculate the cut-off as more than 2 standard deviations from the mean.
         # We can then identify anomalies as those examples that fall outside of the defined upper limit.
-        cut_off = std * 2
+        cut_off = std * 3
         THRESHOLD =  mean + cut_off
         return THRESHOLD
 
 
-    # visualization ------------------------------------------------------
-    """
-    visualise losses
-    """
+   # visualization ------------------------------------------------------
 
     def predictions_loss_test_normal(self, losses, train_normal_dataset):
         plt.figure(figsize=(5,3))
@@ -464,11 +455,7 @@ class LAAD:
         return figure
 
 
-    # save anomalies  and delta RHR ------------------------------------------------------
-    """
-    Save anomalies predicted in test data.
-    Calculate delta RHR of test anomaly reltive to trainn/baseline.
-    """
+    # save anomalies and delta RHR  ------------------------------------------------------
 
     def save_anomalies(self, test, test_anomaly_delta_RHR):
         test_score_df = pd.DataFrame(index=test[TIME_STEPS:].index)
@@ -490,6 +477,7 @@ class LAAD:
         delta_RHR.to_csv(myphd_id + '_delta_RHR.csv')
         anomalies.to_csv(myphd_id + '_anomalies.csv')
         return anomalies, delta_RHR
+
 
     # evaluate complete dataset  ------------------------------------------------------
     """
@@ -514,7 +502,7 @@ class LAAD:
 
         #print(all_anomalies)
 
-        all_anomalies.to_csv(myphd_id + '_all__anomalies.csv')
+        all_anomalies.to_csv(myphd_id + '_anomalies_all.csv')
         return all_anomalies
 
 
@@ -525,11 +513,13 @@ class LAAD:
     -7+21 window (True preds are TPs and False are TNs)
     True negative (TN) are the number of normal days that are correctly identified as normal
     False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
-    -7: window (False=1)
+    -20-10: window (False=1)
     """
 
-
     def metrics_1(self, all_anomalies, test_normal_data, symptom_date_before_7, symptom_date_after_21):
+        # True positives (TP) are the number of anomalous days that are correctly identified as anomalous,
+        # False negatives (FN) are the no.of anomalous days that are incorrectly identified as normal.
+        #7-21 window (True preds are TPs and False are TNs)
 
         def listToStringWithoutBrackets(list1):
             return str(list1).replace('[','').replace(']','').replace('\'','').replace('(','').replace(')','').replace(': , ',':').replace(':, ',':')
@@ -549,12 +539,12 @@ class LAAD:
         print("..................................................................\n" + myphd_id +": Metrics:")
         print("..................................................................\n")
 
+        test_anomaly_df3 = test_anomaly_df1[test_anomaly_df1['anomaly'] == False]
+        FN = int(test_anomaly_df3['RHR'].values) if len(test_anomaly_df3)>0 else 0
+
         # True negative (TN) are the number of normal days that are correctly identified as normal
         # False positives (FP) are the no.of normal days that are incorrectly identified as anomalous. 
         #-20:-10 window (False=1)
-
-        test_anomaly_df3 = test_anomaly_df1[test_anomaly_df1['anomaly'] == False]
-        FN = int(test_anomaly_df3['RHR'].values) if len(test_anomaly_df3)>0 else 0
 
         test_normal_df1 = pd.merge(test_normal_data, all_anomalies,  how='outer',  left_index=True, right_index=True)
         #print(test_normal_df1)
@@ -740,7 +730,6 @@ class LAAD:
 
 #################################################################################################
 
-
 LAAD = LAAD()
 
 # pre-process data
@@ -748,10 +737,10 @@ df1 = LAAD.resting_heart_rate(fitbit_oldProtocol_hr, fitbit_oldProtocol_steps)
 processed_data = LAAD.pre_processing(df1)
 
 # split dates and data using assumptions listed in the paper
-train = LAAD.data_splitting(processed_data)
+train, symptom_date1, symptom_date_before_7, symptom_date_after_21 = LAAD.data_splitting(processed_data)
 
 # standardization
-train_data, test, test_data, test_normal_data, test_anomaly_data, all_merged, test_anomaly_delta_RHR, symptom_date1, symptom_date_before_7, symptom_date_after_21 = LAAD.standardization(train, processed_data)
+train_data, test, test_data, test_normal_data, test_anomaly_data, all_merged, test_anomaly_delta_RHR = LAAD.standardization(train, processed_data)
 
 
 #  Create subsequences in tensor format from a dataframe
