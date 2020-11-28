@@ -7,7 +7,7 @@
 # Date: Nov 26 2020                                  #
 ######################################################
 
-#python laad_RHR_keras_v4.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+#python laad_illness_v5.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 
 import warnings
@@ -77,6 +77,8 @@ BATCH_SIZE = 64
 VALIDATION_SPLIT = 0.05
 LEARNING_RATE = 0.0001
 
+BASE_LINE_DAYS = 10
+
 
 class LAAD:
 
@@ -143,7 +145,7 @@ class LAAD:
         It also creates windows of pre- and post-symptomatic COVID-periods.
         """
 
-        train = processed_data[:10]
+        train = processed_data[:BASE_LINE_DAYS]
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
@@ -152,7 +154,7 @@ class LAAD:
         processed_data.index = pd.to_datetime(processed_data.index)
 
         # split data into train
-        start = processed_data.index[0] + timedelta(days=10)
+        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
         train = processed_data[(processed_data.index.get_level_values(0) < start)]
         train = train.set_index('index')
         train = train.drop(['time'], axis=1)
@@ -191,7 +193,7 @@ class LAAD:
         processed_data = processed_data.set_index('date')
         processed_data.index.name = None
         processed_data.index = pd.to_datetime(processed_data.index)
-        start = processed_data.index[0] + timedelta(days=10)
+        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
         test = processed_data[(processed_data.index.get_level_values(0) >= start)]
         test = test.set_index('index')
         test = test.drop(['time'], axis=1)
@@ -427,7 +429,7 @@ class LAAD:
         # We can calculate the mean and standard deviation of training data loss 
         # then calculate the cut-off as more than 2 standard deviations from the mean.
         # We can then identify anomalies as those examples that fall outside of the defined upper limit.
-        cut_off = std * 2
+        cut_off = std * 3
         THRESHOLD =  mean + cut_off
         return THRESHOLD
 
@@ -500,7 +502,7 @@ class LAAD:
 
         #print(all_anomalies)
 
-        all_anomalies.to_csv(myphd_id + '_all__anomalies.csv')
+        all_anomalies.to_csv(myphd_id + '_anomalies_all.csv')
         return all_anomalies
 
 
