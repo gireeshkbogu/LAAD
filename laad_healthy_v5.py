@@ -7,7 +7,7 @@
 # Date: Nov 26 2020                                  #
 ######################################################
 
-#python laad_healthy_v5.py --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+#python laad_healthy_v5.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 
 import warnings
@@ -355,7 +355,7 @@ class LAAD:
     def LA(self, train, valid):
         model = keras.Sequential()
         # shape [batch, time, features] => [batch, time, lstm_units]
-        model.add(keras.layers.LSTM(units=64, 
+        model.add(keras.layers.LSTM(units=128, 
             input_shape=(train_dataset.shape[1], train_dataset.shape[2]), 
             return_sequences=True))
         #model.add(keras.layers.Dropout(rate=0.2))
