@@ -158,7 +158,8 @@ class LAAD:
         processed_data.index = pd.to_datetime(processed_data.index)
 
         # split data into train
-        start1 = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
+        start1 = processed_data.index[0]
+        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
         train = processed_data[(processed_data.index.get_level_values(0) < start)]
         train = train.set_index('index')
         train = train.drop(['time'], axis=1)
