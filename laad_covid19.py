@@ -7,7 +7,7 @@
 # Date: Nov 26 2020                                  #
 ######################################################
 
-#python laad_illness_v5.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
+#python laad_RHR_keras_v4.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
 
 import warnings
@@ -139,13 +139,21 @@ class LAAD:
 
    # data splitting ------------------------------------------------------
 
-    def data_splitting(self, processed_data):
+    def data_splitting(self, processed_data, symptom_date):
         """
         It splits data into training data by taking first 10 days and the rest as testing data.
         It also creates windows of pre- and post-symptomatic COVID-periods.
+
         """
 
-        train = processed_data[:BASE_LINE_DAYS]
+        symptom_date1 = pd.to_datetime(symptom_date)
+        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
+        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
+        symptom_date_before_20 = pd.to_datetime(symptom_date1) + timedelta(days=-20)
+        symptom_date_before_10 = pd.to_datetime(symptom_date1) + timedelta(days=-10)
+
+
+        # train data
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
@@ -154,81 +162,75 @@ class LAAD:
         processed_data.index = pd.to_datetime(processed_data.index)
 
         # split data into train
-        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
-        train = processed_data[(processed_data.index.get_level_values(0) < start)]
+        start1 = processed_data.index[0] 
+        train = processed_data[(processed_data.index.get_level_values(0) < symptom_date_before_20)]
         train = train.set_index('index')
         train = train.drop(['time'], axis=1)
 
-        symptom_date1 = pd.to_datetime(symptom_date)
-        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
-        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
+        # take first 10  days of train data
+        start = train.index[0] + timedelta(days=BASE_LINE_DAYS)
+        train = train[(train.index.get_level_values(0) < start)]
+        train_end = train.index[-1]
 
-        return train, symptom_date1, symptom_date_before_7, symptom_date_after_21
-
-    # standardization ------------------------------------------------------
-
-    def standardization(self, train_data, processed_data):
-        """
-        It standardizes the data with zero mean and unit variance (Z-score).
-        One common mistake is: we normalize the entire data and then split into train-test. 
-        This is not correct. Test data should be completely unseen to anything during the modeling. 
-        We should normalize the test data using the feature summary statistics computed from the training data. 
-        For normalization, these statistics are the mean and variance for each feature.
-        The same logic should be used for the validation set if theree is any. This makes the model more stable for a test data.
-
-        It also  splits the test data into test-normal and tes-anomaly for metrics calcualtions later
-        It calculates delta RHR for test-anomlay data using baseline/training data
-        """
-
-        # calculate mean RHR for train data for delta RHR calculations
-        train_data_reset = train_data.reset_index()
-        train_data_baseline_RHR = train_data_reset['RHR'].mean()
-
-        scaler = StandardScaler().fit(train_data)
-        train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
-
+        # all the  data after 10 days would be grouped into test data
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
         processed_data = processed_data.set_index('date')
         processed_data.index.name = None
         processed_data.index = pd.to_datetime(processed_data.index)
-        start = processed_data.index[0] + timedelta(days=BASE_LINE_DAYS)
-        test = processed_data[(processed_data.index.get_level_values(0) >= start)]
+        #start = processed_data.index[0] 
+        test = processed_data[(processed_data.index.get_level_values(0) >= train_end)]
         test = test.set_index('index')
         test = test.drop(['time'], axis=1)
+        end = processed_data.index[-1]
 
-        test_data = test
+        # calculate delta RHR 
+        train_reset = train.reset_index()
+        train_baseline_RHR = train_reset['RHR'].mean()
 
-        # calculate mean RHR for train data for delta RHR calculations
-        symptom_date1 = pd.to_datetime(symptom_date)
-        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
-        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
-        test_anomaly_RHR = test_data[symptom_date_before_7:symptom_date_after_21]
-        test_anomaly_delta_RHR = test_anomaly_RHR - train_data_baseline_RHR
+        test_anomaly_RHR = test[symptom_date_before_7:symptom_date_after_21]
+        test_anomaly_delta_RHR = test_anomaly_RHR['RHR'] - train_baseline_RHR
+
+        with open(myphd_id+'_data_split_dates.csv', 'w') as f:
+            print("id","start_date ","symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
+                myphd_id, start1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
+
+        return symptom_date1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, train, test, test_anomaly_delta_RHR
+
+    # standardization ------------------------------------------------------
+
+    def standardization(self, train_data, test_data, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21):
+        """
+        It standardizes the data with zero mean and unit variance (Z-score). 
+        We should normalize the test data using the feature summary statistics computed from the training data. 
+
+        It also  splits the test data into test-normal and tes-anomaly for metrics calcualtions later
+        It calculates delta RHR for test-anomlay data using baseline/training data
+        """
+
+        # standardize train data 
+        scaler = StandardScaler().fit(train_data)
+        train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
+        print(train_data)
 
         # standardize test data 
-        test_data[['RHR']] = scaler.transform(test[['RHR']])
+        test_data[['RHR']] = scaler.transform(test_data[['RHR']])
+        test_data = test_data.drop(['level_0'], axis=1)
+        print(test_data)
 
         # split data for test_normal and test_anomaly
-        symptom_date1 = pd.to_datetime(symptom_date)
-
-        symptom_date_before_7 = pd.to_datetime(symptom_date1) + timedelta(days=-7)
-        symptom_date_after_21 = pd.to_datetime(symptom_date1) + timedelta(days=21)
         test_anomaly = test_data[symptom_date_before_7:symptom_date_after_21]
+        test_normal = test_data[symptom_date_before_20:symptom_date_before_10]
 
-        symptom_date_before_20 = pd.to_datetime(symptom_date1) + timedelta(days=-20)
-        symptom_date_before_10 = pd.to_datetime(symptom_date1) + timedelta(days=-10)
-        #test_normal = test[symptom_date_after_21:]
-        test_normal = test[symptom_date_before_20:symptom_date_before_10]
-
-        all_merged = pd.concat([train_data, test])
+        all_merged = pd.concat([train_data, test_data])
+        print(all_merged)
 
         with open(myphd_id+'_data_size.csv', 'w') as f:
             print("id","train ","test ", "test_normal ", "test_anomaly ","\n",
                 myphd_id, train_data.shape, test_data.shape, test_normal.shape, test_anomaly.shape, file=f)
 
-        return train_data, test, test_data, test_normal, test_anomaly, all_merged, test_anomaly_delta_RHR
+        return train_data, test_data, test_normal, test_anomaly, all_merged
 
 
     # creating LSTM input ------------------------------------------------------
@@ -350,13 +352,14 @@ class LAAD:
     # LSTM Autoencoder model ------------------------------------------------------
     """
     Builds ENCODER and DECODER architecture with LSTM layers
+
     """
 
     def LA(self, train, valid):
         model = keras.Sequential()
         # shape [batch, time, features] => [batch, time, lstm_units]
-        model.add(keras.layers.LSTM(units=128, 
-            input_shape=(train_dataset.shape[1], train_dataset.shape[2]), 
+        model.add(keras.layers.LSTM(units=128,
+            input_shape=(train_dataset.shape[1], train_dataset.shape[2]), # univariate input
             return_sequences=True))
         #model.add(keras.layers.Dropout(rate=0.2))
         model.add(keras.layers.LSTM(units=64, return_sequences=False))
@@ -366,7 +369,7 @@ class LAAD:
         #model.add(keras.layers.Dropout(rate=0.2))
         # shape => [batch, time, features]
         model.add(keras.layers.TimeDistributed(
-            keras.layers.Dense(units=train_dataset.shape[2])))
+            keras.layers.Dense(units=train_dataset.shape[2]))) # univariate output
         model.compile(loss=tf.losses.MeanSquaredError(),
                 optimizer=tf.optimizers.Adam(lr = LEARNING_RATE),
                 metrics=[tf.metrics.MeanSquaredError()])
@@ -417,7 +420,7 @@ class LAAD:
 
     def anomaly_threshold(self, losses):
         stats = pd.DataFrame(losses).describe()
-        print(stats)
+        #print(stats)
         mean = stats.filter(like='mean', axis=0)
         mean = float(mean[0]) 
         std = stats.filter(like='std', axis=0)
@@ -632,8 +635,11 @@ class LAAD:
         NPV = tn / (tn+fn),
         Precision = tp / (tp+fp),
         Recall = tp / (tp+fn),
-        F1 =  2 *( ((tp / (tp+fp)) * (tp / (tp+fn))) / ((tp / (tp+fp)) + (tp / (tp+fn))))
-        return Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1
+        # F1 = 2 * ( (Precision * Recall) / (Precision + Recall) )
+        #F1 =  2 *( ((tp / (tp+fp)) * (tp / (tp+fn))) / ((tp / (tp+fp)) + (tp / (tp+fn))))
+        # Fbeta = ((1 + beta^2) * Precision * Recall) / (beta^2 * Precision + Recall)
+        Fbeta =  ((1+0.1**2) * ((tp / (tp+fp)) * (tp / (tp+fn)))) / ((0.1**2) * (tp / (tp+fp)) + (tp / (tp+fn)))
+        return Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta
 
 
     # save metrics  ------------------------------------------------------
@@ -641,7 +647,7 @@ class LAAD:
     Calculate Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1
     """
 
-    def save_metrics(self, TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1):
+    def save_metrics(self, TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta):
         
         def listToStringWithoutBrackets(list1):
             return str(list1).replace('[','').replace(']','').replace('\'','').replace('(','').replace(')','').replace(': , ',':').replace(':, ',':')
@@ -652,26 +658,28 @@ class LAAD:
         NPV = [ '%.3f' % elem for elem in NPV ]
         Precision = [ '%.3f' % elem for elem in Precision ]
         Recall = [ '%.3f' % elem for elem in Recall ]
-        F1 = round(F1,3)
+        #F1 = round(F1,3)
+        Fbeta = round(Fbeta,3)
+
 
         formatted_list  = ('TP: ', TP,'FP: ', FP,'TN: ',TN,'FN:',FN, 
             'Sensitivity:',Sensitivity,'Specificity:',Specificity,
             'PPV:',PPV, 'NPV:', NPV,
-            'Precision:',Precision, 'Recall:',Recall, 'F1:',F1)
+            'Precision:',Precision, 'Recall:',Recall, 'Fbeta:', Fbeta)
 
         formatted_list_1  = ('TP: ', TP,'FP: ', FP,'TN: ',TN,'FN:',FN, 
-            'Precision:',Precision, 'Recall:',Recall, 'F1:',F1)
+            'Precision:',Precision, 'Recall:',Recall, 'Fbeta:', Fbeta)
 
         formatted_list = listToStringWithoutBrackets(formatted_list)
         formatted_list_1 = listToStringWithoutBrackets(formatted_list_1)
 
         #print(formatted_list_1)
 
-        metrics_list = [TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1]
+        metrics_list = [TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta]
         #metrics_list = listToStringWithoutBrackets(metrics_list)
 
         metrics_df = pd.DataFrame([metrics_list])
-        metrics_df.columns =['TP', 'FP', 'TN', 'FN', 'Sensitivity','Specificity','PPV', 'NPV', 'Precision', 'Recall', 'F1']
+        metrics_df.columns =['TP', 'FP', 'TN', 'FN', 'Sensitivity','Specificity','PPV', 'NPV', 'Precision', 'Recall', 'Fbeta']
         metrics_df.rename({0: myphd_id}, axis='index')
         metrics_df.index = [myphd_id]
         metrics_df.to_csv(myphd_id + '_metrics.csv', header=True)
@@ -737,10 +745,10 @@ df1 = LAAD.resting_heart_rate(fitbit_oldProtocol_hr, fitbit_oldProtocol_steps)
 processed_data = LAAD.pre_processing(df1)
 
 # split dates and data using assumptions listed in the paper
-train, symptom_date1, symptom_date_before_7, symptom_date_after_21 = LAAD.data_splitting(processed_data)
+symptom_date1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, train, test, test_anomaly_delta_RHR = LAAD.data_splitting(processed_data, symptom_date)
 
 # standardization
-train_data, test, test_data, test_normal_data, test_anomaly_data, all_merged, test_anomaly_delta_RHR = LAAD.standardization(train, processed_data)
+train_data, test_data, test_normal_data, test_anomaly_data, all_merged = LAAD.standardization(train, test, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21)
 
 
 #  Create subsequences in tensor format from a dataframe
@@ -797,10 +805,10 @@ all_anomalies = LAAD.evaluate_complete_dataset(all_merged, THRESHOLD)
 # metrics
 TP, FP, TN, FN, formatted_list_2 = LAAD.metrics_1(all_anomalies, test_normal_data, symptom_date_before_7, symptom_date_after_21)
 LAAD.visualize_complete_dataset1(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_2)
-Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1 = LAAD.metrics_2(TP, FP, TN, FN)
+Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta = LAAD.metrics_2(TP, FP, TN, FN)
 
 # visualization
-formatted_list,formatted_list_1 = LAAD.save_metrics(TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1)
+formatted_list,formatted_list_1 = LAAD.save_metrics(TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta)
 LAAD.visualize_complete_dataset2(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_1)
 
 print("\nCompleted!\n")
