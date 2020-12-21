@@ -1,4 +1,3 @@
-# Aim: Compare metrics across 3 different groups
 ## Date: 4 Dec 2020 
 ## Author: Gireesh Bogu
 ## Contact: gireesh.bogu@stanford.edu
