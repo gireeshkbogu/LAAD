@@ -23,15 +23,9 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 #### RHR
 
 <p align="middle">
-<img width="377" alt="s_training" src="https://user-images.githubusercontent.com/3885659/98371029-5b576b80-1ff0-11eb-89ab-c002d3ea78ba.png">
-<img width="373" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/98371036-5db9c580-1ff0-11eb-9988-d3af77d5ef4d.png">
+<img width="377" alt="s_training" src="https://user-images.githubusercontent.com/3885659/102735598-bf5f9600-42f7-11eb-925d-7eb6c411c95a.png">
+<img width="373" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/102735600-c25a8680-42f7-11eb-82a9-b23cc06965b6.png">
 <br/><br/>
-<img width="904" alt="s_results" src="https://user-images.githubusercontent.com/3885659/98371058-67432d80-1ff0-11eb-8802-e28d49a2391e.png">
-<br/><br/>
-<img width="910" alt="s_aomalies" src="https://user-images.githubusercontent.com/3885659/98371063-6ad6b480-1ff0-11eb-9b01-ba0aa6510724.png">
-<br/><br/>
-<img width="678" alt="s_metrics" src="https://user-images.githubusercontent.com/3885659/98371069-6e6a3b80-1ff0-11eb-8f22-4a52834e8844.png">
-<br/><br/>
-<img width="330" alt="s_roc_plot" src="https://user-images.githubusercontent.com/3885659/98371076-71652c00-1ff0-11eb-988e-7d83f1d27dcc.png">
+<img width="904" alt="s_results" src="https://user-images.githubusercontent.com/3885659/102735609-c5ee0d80-42f7-11eb-90ab-60010336e74d.png">
 </p>
 
