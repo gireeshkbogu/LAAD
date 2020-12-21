@@ -74,7 +74,6 @@ https://github.com/uchidalab/time_series_augmentation
 https://github.com/terryum/Data-Augmentation-For-Wearable-Sensor-Data
 
 
-
 (1) What defines an efficacious COVID-19 vaccine? A review of the challenges assessing the clinical efficacy of vaccines against SARS-CoV-2 Susanne H Hodgson, DPhil, The Lancet Infectious Diseases
 
 (2) Detecting Mobile Traffic Anomalies through Physical Control Channel Fingerprinting: a Deep Semi-supervised Approach, HOANG DUY TRINH1,IEEE
