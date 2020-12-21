@@ -1,2 +1,2 @@
-,TP,FP,TN,FN,Sensitivity,Specificity,Precision,Recall,AUC
-ASFODQR,16,1,73,13,"(0.5517241379310345,)","(0.9864864864864865,)","(0.9411764705882353,)","(0.8488372093023255,)",0.717381174277726
+,TP,FP,TN,FN,Sensitivity,Specificity,PPV,NPV,Precision,Recall,Fbeta
+ASFODQR,178,21,46,88,['0.669'],['0.687'],['0.894'],['0.343'],['0.894'],['0.669'],0.892
