@@ -10,7 +10,7 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 
 
 
-### LAAD architecutre
+### LAAD architecture
 
 <p align="center">
 <img width="800" alt="LAAD" src="https://user-images.githubusercontent.com/3885659/102735228-b4583600-42f6-11eb-9c2f-5af2ae614dab.png">
