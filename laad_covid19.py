@@ -1,4 +1,5 @@
 # LSTM-Autoencoder based Anomaly Detection (LAAD)
+# detects abnormal RHR; uses all training data; augments 8 times the training data size.
 
 ######################################################
 # Author: Gireesh K. Bogu                            #
@@ -8,7 +9,6 @@
 ######################################################
 
 #python laad_RHR_keras_v4.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
-
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -25,6 +25,7 @@ import random
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 
 from scipy import interp
 from arff2pandas import a2p
@@ -77,7 +78,7 @@ BATCH_SIZE = 64
 VALIDATION_SPLIT = 0.05
 LEARNING_RATE = 0.0001
 
-BASE_LINE_DAYS = 10
+#BASE_LINE_DAYS = 10
 
 
 class LAAD:
@@ -154,6 +155,7 @@ class LAAD:
 
 
         # train data
+        #train = processed_data[:BASE_LINE_DAYS]
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
@@ -162,25 +164,20 @@ class LAAD:
         processed_data.index = pd.to_datetime(processed_data.index)
 
         # split data into train
-        start1 = processed_data.index[0] 
+        start = processed_data.index[0] 
         train = processed_data[(processed_data.index.get_level_values(0) < symptom_date_before_20)]
         train = train.set_index('index')
         train = train.drop(['time'], axis=1)
 
-        # take first 10  days of train data
-        start = train.index[0] + timedelta(days=BASE_LINE_DAYS)
-        train = train[(train.index.get_level_values(0) < start)]
-        train_end = train.index[-1]
-
-        # all the  data after 10 days would be grouped into test data
+        # test data
         processed_data = processed_data.reset_index()
         processed_data['date'] = [d.date() for d in processed_data['index']]
         processed_data['time'] = [d.time() for d in processed_data['index']]
         processed_data = processed_data.set_index('date')
         processed_data.index.name = None
         processed_data.index = pd.to_datetime(processed_data.index)
-        #start = processed_data.index[0] 
-        test = processed_data[(processed_data.index.get_level_values(0) >= train_end)]
+        start = processed_data.index[0] 
+        test = processed_data[(processed_data.index.get_level_values(0) >= symptom_date_before_20)]
         test = test.set_index('index')
         test = test.drop(['time'], axis=1)
         end = processed_data.index[-1]
@@ -194,7 +191,7 @@ class LAAD:
 
         with open(myphd_id+'_data_split_dates.csv', 'w') as f:
             print("id","start_date ","symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
-                myphd_id, start1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
+                myphd_id, start, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
 
         return symptom_date1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, train, test, test_anomaly_delta_RHR
 
@@ -210,21 +207,20 @@ class LAAD:
         """
 
         # standardize train data 
-        scaler = StandardScaler().fit(train_data)
+        scaler = StandardScaler()
         train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
-        print(train_data)
 
         # standardize test data 
-        test_data[['RHR']] = scaler.transform(test_data[['RHR']])
         test_data = test_data.drop(['level_0'], axis=1)
-        print(test_data)
+        test_data[['RHR']] = scaler.transform(test_data[['RHR']])
+
 
         # split data for test_normal and test_anomaly
         test_anomaly = test_data[symptom_date_before_7:symptom_date_after_21]
         test_normal = test_data[symptom_date_before_20:symptom_date_before_10]
 
         all_merged = pd.concat([train_data, test_data])
-        print(all_merged)
+        #print(all_merged)
 
         with open(myphd_id+'_data_size.csv', 'w') as f:
             print("id","train ","test ", "test_normal ", "test_anomaly ","\n",
@@ -433,7 +429,8 @@ class LAAD:
         # then calculate the cut-off as more than 2 standard deviations from the mean.
         # We can then identify anomalies as those examples that fall outside of the defined upper limit.
         cut_off = std * 3
-        THRESHOLD =  mean + cut_off
+        #THRESHOLD =  mean + cut_off
+        THRESHOLD =  max
         return THRESHOLD
 
 
@@ -467,6 +464,10 @@ class LAAD:
         test_score_df['anomaly'] = test_score_df.loss > test_score_df.threshold
         test_score_df['RHR'] = test[TIME_STEPS:].RHR
         anomalies = test_score_df[test_score_df.anomaly == True]
+
+        # turn lowered RHR to zero (we are only interested inn elevated RHR)
+        #anomalies.loc[anomalies.RHR <=0 , 'loss'] = 0
+        #anomalies.loc[anomalies.RHR <=0 , 'anomaly'] = False
 
         print("..................................................................\n" + myphd_id +": Anomalies:")
         print("..................................................................\n")
@@ -503,7 +504,9 @@ class LAAD:
         all_anomalies.index = all_anomalies.index.rename('datetime')
         all_anomalies = all_anomalies.sort_index()
 
-        #print(all_anomalies)
+        # turn lowered RHR to zero (we are only interested inn elevated RHR)
+        #all_anomalies.loc[all_anomalies.RHR <=0 , 'loss'] = 0
+        #all_anomalies.loc[all_anomalies.RHR <=0 , 'anomaly'] = False
 
         all_anomalies.to_csv(myphd_id + '_anomalies_all.csv')
         return all_anomalies
