@@ -1,4 +1,5 @@
 # LSTM-Autoencoder based Anomaly Detection (LAAD)
+# detects abnormal RHR; uses 10 days training data; augments 8 times the training data size.
 
 ######################################################
 # Author: Gireesh K. Bogu                            #
@@ -221,21 +222,19 @@ class LAAD:
         """
 
         # standardize train data 
-        scaler = StandardScaler().fit(train_data)
+        scaler = StandardScaler()
         train_data[['RHR']] = scaler.fit_transform(train_data[['RHR']])
-        print(train_data)
 
         # standardize test data 
-        test_data[['RHR']] = scaler.transform(test_data[['RHR']])
         test_data = test_data.drop(['level_0'], axis=1)
-        print(test_data)
+        test_data[['RHR']] = scaler.transform(test_data[['RHR']])
 
         # split data for test_normal and test_anomaly
         test_anomaly = test_data[symptom_date_before_7:symptom_date_after_21]
         test_normal = test_data[symptom_date_before_20:symptom_date_before_10]
 
         all_merged = pd.concat([train_data, test_data])
-        print(all_merged)
+        #print(all_merged)
 
         with open(myphd_id+'_data_size.csv', 'w') as f:
             print("id","train ","test ", "test_normal ", "test_anomaly ","\n",
@@ -485,6 +484,10 @@ class LAAD:
         test_score_df['RHR'] = test[TIME_STEPS:].RHR
         anomalies = test_score_df[test_score_df.anomaly == True]
 
+        # turn lowered RHR to zero (we are only interested inn elevated RHR)
+        #anomalies.loc[anomalies.RHR <=0 , 'loss'] = 0
+        #anomalies.loc[anomalies.RHR <=0 , 'anomaly'] = False
+
         print("..................................................................\n" + myphd_id +": Anomalies:")
         print("..................................................................\n")
         print(anomalies)
@@ -519,7 +522,9 @@ class LAAD:
         all_anomalies.index = all_anomalies.index.rename('datetime')
         all_anomalies = all_anomalies.sort_index()
 
-        #print(all_anomalies)
+        # turn lowered RHR to zero (we are only interested inn elevated RHR)
+        #all_anomalies.loc[all_anomalies.RHR <=0 , 'loss'] = 0
+        #all_anomalies.loc[all_anomalies.RHR <=0 , 'anomaly'] = False
 
         all_anomalies.to_csv(myphd_id + '_anomalies_all.csv')
         return all_anomalies
@@ -653,7 +658,7 @@ class LAAD:
         F1 =  2 *( ((tp / (tp+fp)) * (tp / (tp+fn))) / ((tp / (tp+fp)) + (tp / (tp+fn))))
         # Fbeta = ((1 + beta^2) * Precision * Recall) / (beta^2 * Precision + Recall)
         Fbeta =  ((1+0.1**2) * ((tp / (tp+fp)) * (tp / (tp+fn)))) / ((0.1**2) * (tp / (tp+fp)) + (tp / (tp+fn)))
-        return Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1, Fbeta
+        return Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta
 
 
     # save metrics  ------------------------------------------------------
@@ -661,7 +666,7 @@ class LAAD:
     Calculate Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1
     """
 
-    def save_metrics(self, TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1, Fbeta):
+    def save_metrics(self, TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta):
         
         def listToStringWithoutBrackets(list1):
             return str(list1).replace('[','').replace(']','').replace('\'','').replace('(','').replace(')','').replace(': , ',':').replace(':, ',':')
@@ -672,28 +677,28 @@ class LAAD:
         NPV = [ '%.3f' % elem for elem in NPV ]
         Precision = [ '%.3f' % elem for elem in Precision ]
         Recall = [ '%.3f' % elem for elem in Recall ]
-        F1 = round(F1,3)
+        #F1 = round(F1,3)
         Fbeta = round(Fbeta,3)
 
 
         formatted_list  = ('TP: ', TP,'FP: ', FP,'TN: ',TN,'FN:',FN, 
             'Sensitivity:',Sensitivity,'Specificity:',Specificity,
             'PPV:',PPV, 'NPV:', NPV,
-            'Precision:',Precision, 'Recall:',Recall, 'F1:',F1, 'Fbeta:', Fbeta)
+            'Precision:',Precision, 'Recall:',Recall, 'Fbeta:', Fbeta)
 
         formatted_list_1  = ('TP: ', TP,'FP: ', FP,'TN: ',TN,'FN:',FN, 
-            'Precision:',Precision, 'Recall:',Recall, 'F1:',F1,'Fbeta:', Fbeta)
+            'Precision:',Precision, 'Recall:',Recall, 'Fbeta:', Fbeta)
 
         formatted_list = listToStringWithoutBrackets(formatted_list)
         formatted_list_1 = listToStringWithoutBrackets(formatted_list_1)
 
         #print(formatted_list_1)
 
-        metrics_list = [TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1, Fbeta]
+        metrics_list = [TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta]
         #metrics_list = listToStringWithoutBrackets(metrics_list)
 
         metrics_df = pd.DataFrame([metrics_list])
-        metrics_df.columns =['TP', 'FP', 'TN', 'FN', 'Sensitivity','Specificity','PPV', 'NPV', 'Precision', 'Recall', 'F1', 'Fbeta']
+        metrics_df.columns =['TP', 'FP', 'TN', 'FN', 'Sensitivity','Specificity','PPV', 'NPV', 'Precision', 'Recall', 'Fbeta']
         metrics_df.rename({0: myphd_id}, axis='index')
         metrics_df.index = [myphd_id]
         metrics_df.to_csv(myphd_id + '_metrics.csv', header=True)
@@ -821,10 +826,10 @@ all_anomalies = LAAD.evaluate_complete_dataset(all_merged, THRESHOLD)
 TP, FP, TN, FN, formatted_list_2 = LAAD.metrics_1(all_anomalies, test_normal_data, symptom_date_before_7, symptom_date_after_21)
 LAAD.visualize_complete_dataset1(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_2)
 LAAD.visualize_complete_dataset1(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_2)
-Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1, Fbeta = LAAD.metrics_2(TP, FP, TN, FN)
+Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta = LAAD.metrics_2(TP, FP, TN, FN)
 
 # visualization
-formatted_list,formatted_list_1 = LAAD.save_metrics(TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, F1, Fbeta)
+formatted_list,formatted_list_1 = LAAD.save_metrics(TP, FP, TN, FN, Sensitivity, Specificity, PPV, NPV, Precision, Recall, Fbeta)
 LAAD.visualize_complete_dataset2(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_1)
 
 print("\nCompleted!\n")
