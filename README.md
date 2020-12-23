@@ -13,7 +13,7 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 ### Problem setup
 
 <p align="center">
-<img width="800" alt="COVID-19 infectious window" src="https://user-images.githubusercontent.com/3885659/103015069-a243e680-44f4-11eb-8568-221cafbda6b6.png">
+<img width="800" alt="COVID-19 infectious window" src="https://user-images.githubusercontent.com/3885659/103015657-afada080-44f5-11eb-9038-d273a0623093.png">
 </p>
 
 
