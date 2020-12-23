@@ -1,5 +1,5 @@
 # LSTM-Autoencoder based Anomaly Detection (LAAD)
-# detects abnormal RHR; uses 10 days training data; augments 8 times the training data size.
+# detects abnormal RHR; uses 20 days training data; augments 8 times the training data size.
 
 ######################################################
 # Author: Gireesh K. Bogu                            #
@@ -80,7 +80,7 @@ BATCH_SIZE = 64
 VALIDATION_SPLIT = 0.05
 LEARNING_RATE = 0.0001
 
-BASE_LINE_DAYS = 10
+BASE_LINE_DAYS = 20
 
 
 ########################################################################
