@@ -10,13 +10,18 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 
 
 
+### Problem setup
+
+<p align="center">
+<img width="800" alt="COVID-19 infectious window" src="https://user-images.githubusercontent.com/3885659/103015069-a243e680-44f4-11eb-8568-221cafbda6b6.png">
+</p>
+
+
 ### LAAD architecture
 
 <p align="center">
 <img width="800" alt="LAAD" src="https://user-images.githubusercontent.com/3885659/102735228-b4583600-42f6-11eb-9c2f-5af2ae614dab.png">
 </p>
-
-
 
 ### Results
 
