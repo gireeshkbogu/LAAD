@@ -10,6 +10,7 @@
 
 #python laad_RHR_keras_v4.py  --heart_rate COVID-19-Wearables/ASFODQR_hr.csv --steps COVID-19-Wearables/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 
+
 import warnings
 warnings.filterwarnings('ignore')
 import sys 
@@ -190,8 +191,8 @@ class LAAD:
         test_anomaly_delta_RHR = test_anomaly_RHR['RHR'] - train_baseline_RHR
 
         with open(myphd_id+'_data_split_dates.csv', 'w') as f:
-            print("id","start_date ","symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
-                myphd_id, start, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
+            print("id","start_date ","symptom_date1", "symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
+                myphd_id, start, symptom_date, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
 
         return symptom_date1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, train, test, test_anomaly_delta_RHR
 
