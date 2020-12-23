@@ -204,8 +204,8 @@ class LAAD:
         test_anomaly_delta_RHR = test_anomaly_RHR['RHR'] - train_baseline_RHR
 
         with open(myphd_id+'_data_split_dates.csv', 'w') as f:
-            print("id","start_date ","symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
-                myphd_id, start1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
+            print("id","start_date ","symptom_date1", "symptom_date_before_20 ","symptom_date_before_7 ", "symptom_date_before_10 ", "symptom_date_after_21 ","end_date ","\n",
+                myphd_id, start1, symptom_date, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, end, file=f)
 
         return symptom_date1, symptom_date_before_20, symptom_date_before_7, symptom_date_before_10, symptom_date_after_21, train, test, test_anomaly_delta_RHR
 
@@ -833,4 +833,3 @@ formatted_list,formatted_list_1 = LAAD.save_metrics(TP, FP, TN, FN, Sensitivity,
 LAAD.visualize_complete_dataset2(all_anomalies, symptom_date1, symptom_date_before_7, symptom_date_after_21, formatted_list_1)
 
 print("\nCompleted!\n")
-
