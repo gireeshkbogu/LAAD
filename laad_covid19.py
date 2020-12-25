@@ -425,11 +425,11 @@ class LAAD:
         max = stats.filter(like='max', axis=0)
         max = float(max[0])
         
-        #THRESHOLD = max
+        
         # We can calculate the mean and standard deviation of training data loss 
         # then calculate the cut-off as more than 2 standard deviations from the mean.
         # We can then identify anomalies as those examples that fall outside of the defined upper limit.
-        cut_off = std * 3
+        #cut_off = std * 3
         #THRESHOLD =  mean + cut_off
         THRESHOLD =  max
         return THRESHOLD
