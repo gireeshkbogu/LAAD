@@ -4,19 +4,18 @@ LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect
 Link to the research paper - https://www.medrxiv.org/content/10.1101/2021.01.08.21249474v1
 
 
+### Install dependecies
+
+```
+pip install -r dependencies.txt
+```
+
 ### Usage
 
 ```
 python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_steps.csv --myphd_id ASFODQR --symptom_date 2024-08-14
 ```
 
-
-
-### Problem setup
-
-<p align="center">
-<img width="800" alt="COVID-19 infectious window" src="https://user-images.githubusercontent.com/3885659/103015657-afada080-44f5-11eb-9038-d273a0623093.png">
-</p>
 
 
 ### LAAD architecture
@@ -30,8 +29,8 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 #### Reconstruction error (loss)
 
 <p align="middle">
-<img width="328" alt="s_training" src="https://user-images.githubusercontent.com/3885659/102735598-bf5f9600-42f7-11eb-925d-7eb6c411c95a.png">
-<img width="373" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/102735600-c25a8680-42f7-11eb-82a9-b23cc06965b6.png">
+<img width="228" alt="s_training" src="https://user-images.githubusercontent.com/3885659/102735598-bf5f9600-42f7-11eb-925d-7eb6c411c95a.png">
+<img width="273" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/102735600-c25a8680-42f7-11eb-82a9-b23cc06965b6.png">
 </p>
 
 #### Predictions
