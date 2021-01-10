@@ -4,9 +4,11 @@ LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect
 Link to the research paper - https://www.medrxiv.org/content/10.1101/2021.01.08.21249474v1
 
 
-### Install dependecies
+### Installation 
 
-```
+``` 
+git clone https://github.com/gireeshkbogu/LAAD.git
+cd LAAD
 pip install -r dependencies.txt
 ```
 
