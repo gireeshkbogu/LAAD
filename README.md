@@ -1,5 +1,5 @@
 # LAAD
-LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect abnormal resting heart rate (RHR) during the Coronavirus (SARS-CoV-2) infectious period. It uses heart rate and physical activity data from smartwatches like Fitbit, Apple and Garmin. Further, it splits data into training (baseline) and test based on the participant's self-reported symptom dates. It learns the structure of the baseline data for each user by reconstructing the temporal sequences and provides a reconstruction error. Using this error it builds an anomaly threshold and detects if the RHR sequences in the test data anomalous or not.
+LSTM-based Autoencoder Anomaly Detection (LAAD) is primarily developed to detect abnormal resting heart rate (RHR) during the Coronavirus (SARS-CoV-2) infectious period. It uses heart rate and physical activity data from smartwatches like Fitbit, Apple and Garmin. Further, it splits data into training (baseline) and test based on the participant's self-reported symptom date. It learns the structure of the baseline data for each user by reconstructing the temporal sequences and provides a reconstruction error. Using this error it builds an anomaly threshold and detects if the RHR sequences in the test data anomalous or not.
 
 Link to the research paper - https://www.medrxiv.org/content/10.1101/2021.01.08.21249474v1
 
