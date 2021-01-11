@@ -32,7 +32,7 @@ python laad_covid19.py  --heart_rate data/ASFODQR_hr.csv --steps data/ASFODQR_st
 
 <p align="middle">
 <img width="228" alt="s_training" src="https://user-images.githubusercontent.com/3885659/102735598-bf5f9600-42f7-11eb-925d-7eb6c411c95a.png">
-<img width="273" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/102735600-c25a8680-42f7-11eb-82a9-b23cc06965b6.png">
+<img width="250" alt="s_pred_loss" src="https://user-images.githubusercontent.com/3885659/102735600-c25a8680-42f7-11eb-82a9-b23cc06965b6.png">
 </p>
 
 #### Predictions
